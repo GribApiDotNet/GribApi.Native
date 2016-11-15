@@ -1,0 +1,3 @@
+[submodule "GribApi.XP"]
+	path = GribApi.XP
+	url = https://github.com/0x1mason/GribApi.XP.git

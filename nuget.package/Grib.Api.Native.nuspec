@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+	<title>GribApi.Native</title>
+    <id>Grib.Api.Native</id>
+    <version>1.18.0-beta</version>
+    <authors>Eric Millin</authors>
+    <owners>Eric Millin</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <projectUrl>https://github.com/0x1mason/GribApi.Native</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/0x1mason/GribApi.XP/master/build/GribApi.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>GribApi.Native provides the native dependencies for GribApi.NET (https://www.nuget.org/packages/Grib.Api/). Please do not download directly.</description>
+    <copyright>Copyright 2016</copyright>
+    <tags>Geospatial Geo GRIB Weather Forecast Meteorology</tags>
+  </metadata>
+
+</package>

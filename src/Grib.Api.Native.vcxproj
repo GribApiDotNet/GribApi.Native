@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="DebugX64|Win32">
+      <Configuration>DebugX64</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="DebugX64|x64">
+      <Configuration>DebugX64</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{204379CD-C266-4A0D-8E18-3B6AF8AE6AA8}</ProjectGuid>
+    <RootNamespace>grib_api_wrapper</RootNamespace>
+    <ProjectName>Grib.Api.Native</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugX64|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugX64|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugX64|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugX64|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\bin\$(Configuration)\Grib.Api\lib\win\$(PlatformTarget)\</OutDir>
+    <TargetExt>.dll</TargetExt>
+    <IntDir>$(PlatformTarget)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugX64|Win32'">
+    <OutDir>..\bin\$(Configuration)\Grib.Api\lib\win\$(PlatformTarget)\</OutDir>
+    <TargetExt>.dll</TargetExt>
+    <IntDir>$(PlatformTarget)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetExt>.dll</TargetExt>
+    <OutDir>..\bin\$(Configuration)\Grib.Api\lib\win\$(PlatformTarget)\</OutDir>
+    <IntDir>$(PlatformTarget)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugX64|x64'">
+    <TargetExt>.dll</TargetExt>
+    <OutDir>..\bin\$(Configuration)\Grib.Api\lib\win\$(PlatformTarget)\</OutDir>
+    <IntDir>$(PlatformTarget)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\bin\$(Configuration)\Grib.Api\lib\win\$(PlatformTarget)\</OutDir>
+    <TargetExt>.dll</TargetExt>
+    <IntDir>$(PlatformTarget)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetExt>.dll</TargetExt>
+    <OutDir>..\bin\$(Configuration)\Grib.Api\lib\win\$(PlatformTarget)\</OutDir>
+    <IntDir>$(PlatformTarget)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\GribApi.XP\grib_api\src\</AdditionalIncludeDirectories>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <PreprocessorDefinitions>_WINDLL;WIN32;GRIB_OMP_THREADS;HAVE_JPEG;USE_JPEG2000;JAS_WIN_MSVC_BUILD;HAVE_LIBJASPER;HAVE_LIBPNG;HAVE_LIBPNG_DEBUG;_LIB;IEEE;JAS_WIN_MSVC_BUILD;HAVE_STRING_H;YY_NO_UNISTD_H;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\GribApi.XP\lib\$(PlatformTarget)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>grib_api_lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugX64|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\GribApi.XP\grib_api\src\</AdditionalIncludeDirectories>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <PreprocessorDefinitions>_WINDLL;WIN32;GRIB_OMP_THREADS;HAVE_JPEG;USE_JPEG2000;JAS_WIN_MSVC_BUILD;HAVE_LIBJASPER;HAVE_LIBPNG;HAVE_LIBPNG_DEBUG;_LIB;IEEE;JAS_WIN_MSVC_BUILD;HAVE_STRING_H;YY_NO_UNISTD_H;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\GribApi.XP\lib\$(PlatformTarget)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>grib_api_lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\GribApi.XP\grib_api\src\</AdditionalIncludeDirectories>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <PreprocessorDefinitions>_WINDLL;WIN32;GRIB_OMP_THREADS;HAVE_JPEG;USE_JPEG2000;JAS_WIN_MSVC_BUILD;HAVE_LIBJASPER;HAVE_LIBPNG;HAVE_LIBPNG_DEBUG;_LIB;IEEE;JAS_WIN_MSVC_BUILD;HAVE_STRING_H;YY_NO_UNISTD_H;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\GribApi.XP\lib\$(PlatformTarget)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>grib_api_lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugX64|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\GribApi.XP\grib_api\src\</AdditionalIncludeDirectories>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <PreprocessorDefinitions>_WINDLL;WIN32;GRIB_OMP_THREADS;HAVE_JPEG;USE_JPEG2000;JAS_WIN_MSVC_BUILD;HAVE_LIBJASPER;HAVE_LIBPNG;HAVE_LIBPNG_DEBUG;_LIB;IEEE;JAS_WIN_MSVC_BUILD;HAVE_STRING_H;YY_NO_UNISTD_H;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\GribApi.XP\lib\$(PlatformTarget)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>grib_api_lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\GribApi.XP\grib_api\src\</AdditionalIncludeDirectories>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <PreprocessorDefinitions>_WINDLL;WIN32;GRIB_OMP_THREADS;HAVE_JPEG;USE_JPEG2000;JAS_WIN_MSVC_BUILD;HAVE_LIBJASPER;HAVE_LIBPNG;HAVE_LIBPNG_DEBUG;_LIB;IEEE;JAS_WIN_MSVC_BUILD;HAVE_STRING_H;YY_NO_UNISTD_H;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>..\GribApi.XP\lib\$(PlatformTarget)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>grib_api_lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\GribApi.XP\grib_api\src\</AdditionalIncludeDirectories>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <PreprocessorDefinitions>_WINDLL;WIN32;GRIB_OMP_THREADS;HAVE_JPEG;USE_JPEG2000;JAS_WIN_MSVC_BUILD;HAVE_LIBJASPER;HAVE_LIBPNG;HAVE_LIBPNG_DEBUG;_LIB;IEEE;JAS_WIN_MSVC_BUILD;HAVE_STRING_H;YY_NO_UNISTD_H;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>..\GribApi.XP\lib\$(PlatformTarget)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>grib_api_lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Grib_Api_Native.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
