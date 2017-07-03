@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<Target Name="AfterBuild">
 		<ItemGroup>
-			<_Definitions Include="$(MSBuildThisFileDirectory)..\Grib.Api\**\*.*" />
+			<_Definitions Include="$(MSBuildThisFileDirectory)..\content\net45\Grib.Api\**\*.*" />
 		</ItemGroup>
 		<Copy SourceFiles="@(_Definitions)" 
 		  DestinationFiles="@(_Definitions->'$(TargetDir)\Grib.Api\%(RecursiveDir)%(Filename)%(Extension)')"

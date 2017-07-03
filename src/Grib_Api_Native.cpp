@@ -360,7 +360,7 @@ extern "C" {
   {
     char* v = NULL;
     v = (char*)grib_keys_iterator_get_name(iter);
-    strcpy_s(name, 255, v);
+    strcpy(name, v);
   }
 
   SWIGEXPORT bool __stdcall GribKeyIsReadOnly(grib_handle* h, char * name)
@@ -399,6 +399,13 @@ extern "C" {
   {
     grib_set_fail_proc(&OnFail);
     grib_set_exit_proc(&OnExit);
+  }
+
+  SWIGEXPORT void  __stdcall GetGribErrorMsg(int err, char* buff)
+  {
+	  char * msg = 0;
+	  msg = (char*)grib_get_error_message(err);
+	  strcpy(buff, msg);
   }
 }
 
