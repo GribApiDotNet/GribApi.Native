@@ -363,6 +363,22 @@ extern "C" {
     strcpy(name, v);
   }
 
+  SWIGEXPORT void __stdcall SetDefaultDefinitionsPath(char * path)
+  {
+	  char buffer[8192];
+	  grib_context* default_grib_context = grib_context_get_default();
+	  strcpy(buffer, path);
+	  default_grib_context->grib_definition_files_path = strdup(buffer);
+	  default_grib_context->keys_count = 0;
+	  default_grib_context->keys = grib_hash_keys_new(default_grib_context,
+		  &(default_grib_context->keys_count));
+
+	  default_grib_context->concepts_index = grib_itrie_new(default_grib_context,
+		  &(default_grib_context->concepts_count));
+	  default_grib_context->def_files = grib_trie_new(default_grib_context);
+	  default_grib_context->classes = grib_trie_new(default_grib_context);
+  }
+
   SWIGEXPORT bool __stdcall GribKeyIsReadOnly(grib_handle* h, char * name)
   {
     grib_accessor* a = grib_find_accessor(h, name);
