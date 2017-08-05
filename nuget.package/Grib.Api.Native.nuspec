@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>GribApi.Native provides the native dependencies for GribApi.NET (https://www.nuget.org/packages/Grib.Api/). Please do not download directly.</description>
     <copyright>Copyright 2017</copyright>
-    <tags>Geospatial Geo GRIB Weather Forecast Meteorology</tags>
+    <tags>Geospatial Geo GRIB BUFR Weather Forecast Meteorology</tags>
   </metadata>
 
 </package>

@@ -279,11 +279,12 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterStringCallback_GribApiProxy(SWIG_CSharpS
 
 #define SWIG_contract_assert(nullreturn, expr, msg) if (!(expr)) {SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, msg, ""); return nullreturn; } else
 
-#include <string.h>
+
 #include <windows.h>
 #include <assert.h>
 #include <io.h>
 #include <sstream>
+#include <string.h>
 #include "grib_api_internal.h"
 
 typedef void (SWIGSTDCALL* CSharpExceptionCallback_t)(const char *);
@@ -291,12 +292,15 @@ CSharpExceptionCallback_t gribExceptionCallback = NULL;
 
 extern "C" {
   SWIGEXPORT
-  void SWIGSTDCALL GribExceptionRegisterCallback(CSharpExceptionCallback_t customCallback) {
+  void SWIGSTDCALL GribExceptionRegisterCallback(CSharpExceptionCallback_t customCallback)
+  {
     gribExceptionCallback = customCallback;
   }
 
-  static void GribSetPendingFatalException(const char *msg) {
-	  if (gribExceptionCallback != NULL) {
+  static void GribSetPendingFatalException(const char *msg)
+  {
+	  if (gribExceptionCallback != NULL)
+     {
 		  gribExceptionCallback(msg);
 	  }
   }
@@ -312,7 +316,7 @@ extern "C" {
 
     if (h != (intptr_t)INVALID_HANDLE_VALUE)
     {
-      // On Windows, DO NOT call CloseHandle here, see remarks in
+      // DO NOT call CloseHandle here, see remarks in
       // https://msdn.microsoft.com/en-us/library/fxfsw25t(v=vs.120).aspx
       assert(fclose(fhp->File) == 0);
     }
@@ -363,6 +367,22 @@ extern "C" {
     strcpy(name, v);
   }
 
+  SWIGEXPORT void __stdcall SetDefaultDefinitionsPath(char * path)
+  {
+	  char buffer[8192];
+	  grib_context* default_grib_context = grib_context_get_default();
+	  strcpy(buffer, path);
+	  default_grib_context->grib_definition_files_path = strdup(buffer);
+	  default_grib_context->keys_count = 0;
+	  default_grib_context->keys = grib_hash_keys_new(default_grib_context,
+		  &(default_grib_context->keys_count));
+
+	  default_grib_context->concepts_index = grib_itrie_new(default_grib_context,
+		  &(default_grib_context->concepts_count));
+	  default_grib_context->def_files = grib_trie_new(default_grib_context);
+	  default_grib_context->classes = grib_trie_new(default_grib_context);
+  }
+
   SWIGEXPORT bool __stdcall GribKeyIsReadOnly(grib_handle* h, char * name)
   {
     grib_accessor* a = grib_find_accessor(h, name);
@@ -385,27 +405,27 @@ extern "C" {
   {
     std::ostringstream stringStream;
     stringStream << expr << " failed at " << file << " " << line;
-	GribSetPendingFatalException(stringStream.str().c_str());
+	 GribSetPendingFatalException(stringStream.str().c_str());
   };
   
   void OnExit(int code)
   {
     std::ostringstream stringStream;
     stringStream << "grib_api signaled exit with code " << code;
-	GribSetPendingFatalException(stringStream.str().c_str());
+	 GribSetPendingFatalException(stringStream.str().c_str());
   };
   
   SWIGEXPORT void  __stdcall GribSetOnFatal()
   {
-    grib_set_fail_proc(&OnFail);
-    grib_set_exit_proc(&OnExit);
+   // grib_set_fail_proc(&OnFail);
+   // grib_set_exit_proc(&OnExit);
   }
-
+  
   SWIGEXPORT void  __stdcall GetGribErrorMsg(int err, char* buff)
   {
-	  char * msg = 0;
-	  msg = (char*)grib_get_error_message(err);
-	  strcpy(buff, msg);
+    char * msg = 0;
+    msg = (char*)grib_get_error_message(err);
+    strcpy(buff, msg);
   }
 }
 
@@ -519,7 +539,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_MISSING_LONG_get() {
   int jresult ;
   int result;
   
-  result = (int)(0xffffffff);
+  result = (int)(2147483647);
   jresult = result; 
   return jresult;
 }
@@ -645,6 +665,16 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_DUMP_FLAG_ALL_DATA_get() {
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_DUMP_FLAG_ALL_ATTRIBUTES_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)((1 << 10));
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_NEAREST_SAME_GRID_get() {
   int jresult ;
   int result;
@@ -675,6 +705,16 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_NEAREST_SAME_POINT_get() {
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_KEYS_ITERATOR_DUMP_ONLY_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)((1 << 7));
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void * SWIGSTDCALL CSharp_GribFieldsetNewFromFiles(void * jarg1, void * jarg2, int jarg3, void * jarg4, int jarg5, char * jarg6, char * jarg7, void * jarg8) {
   void * jresult ;
   grib_context *arg1 = (grib_context *) 0 ;
@@ -695,7 +735,7 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_GribFieldsetNewFromFiles(void * jarg1, void
   arg6 = (char *)jarg6; 
   arg7 = (char *)jarg7; 
   arg8 = (int *)jarg8; 
-  result = (grib_fieldset *)grib_fieldset_new_from_files(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8);
+  result = (grib_fieldset *)grib_fieldset_new_from_files(arg1,arg2,arg3,arg4,arg5,(char const *)arg6,(char const *)arg7,arg8);
   jresult = (void *)result; 
   return jresult;
 }
@@ -1069,6 +1109,28 @@ SWIGEXPORT char * SWIGSTDCALL CSharp_GribStringList_value_get(void * jarg1) {
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_GribStringList_count_set(void * jarg1, int jarg2) {
+  grib_string_list *arg1 = (grib_string_list *) 0 ;
+  int arg2 ;
+  
+  arg1 = (grib_string_list *)jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->count = arg2;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_GribStringList_count_get(void * jarg1) {
+  int jresult ;
+  grib_string_list *arg1 = (grib_string_list *) 0 ;
+  int result;
+  
+  arg1 = (grib_string_list *)jarg1; 
+  result = (int) ((arg1)->count);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_GribStringList_next_set(void * jarg1, void * jarg2) {
   grib_string_list *arg1 = (grib_string_list *) 0 ;
   grib_string_list *arg2 = (grib_string_list *) 0 ;
@@ -1161,7 +1223,7 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_GribHandleNewFromMessage(void * jarg1, void
   arg1 = (grib_context *)jarg1; 
   arg2 = (void *)jarg2; 
   arg3 = (size_t)jarg3; 
-  result = (grib_handle *)grib_handle_new_from_message(arg1,arg2,arg3);
+  result = (grib_handle *)grib_handle_new_from_message(arg1,(void const *)arg2,arg3);
   jresult = (void *)result; 
   return jresult;
 }
@@ -1196,20 +1258,6 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_GribHandleNewFromMessageCopy(void * jarg1, 
   arg2 = (void *)jarg2; 
   arg3 = (size_t)jarg3; 
   result = (grib_handle *)grib_handle_new_from_message_copy(arg1,(void const *)arg2,arg3);
-  jresult = (void *)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void * SWIGSTDCALL CSharp_GribHandleNewFromTemplate(void * jarg1, char * jarg2) {
-  void * jresult ;
-  grib_context *arg1 = (grib_context *) 0 ;
-  char *arg2 = (char *) 0 ;
-  grib_handle *result = 0 ;
-  
-  arg1 = (grib_context *)jarg1; 
-  arg2 = (char *)jarg2; 
-  result = (grib_handle *)grib_handle_new_from_template(arg1,(char const *)arg2);
   jresult = (void *)result; 
   return jresult;
 }
@@ -1355,21 +1403,19 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_GribIteratorNew(void * jarg1, unsigned long
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_GribGetData(void * jarg1, void * jarg2, void * jarg3, void * jarg4, void * jarg5) {
+SWIGEXPORT int SWIGSTDCALL CSharp_GribGetData(void * jarg1, void * jarg2, void * jarg3, void * jarg4) {
   int jresult ;
   grib_handle *arg1 = (grib_handle *) 0 ;
   double *arg2 = (double *) 0 ;
   double *arg3 = (double *) 0 ;
   double *arg4 = (double *) 0 ;
-  size_t *arg5 = (size_t *) 0 ;
   int result;
   
   arg1 = (grib_handle *)jarg1; 
   arg2 = (double *)jarg2; 
   arg3 = (double *)jarg3; 
   arg4 = (double *)jarg4; 
-  arg5 = (size_t *)jarg5; 
-  result = (int)grib_get_data(arg1,arg2,arg3,arg4,arg5);
+  result = (int)grib_get_data(arg1,arg2,arg3,arg4);
   jresult = result; 
   return jresult;
 }
@@ -1671,6 +1717,24 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GribGetString(void * jarg1, char * jarg2, char
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_GribGetStringArray(void * jarg1, char * jarg2, void * jarg3, void * jarg4) {
+  int jresult ;
+  grib_handle *arg1 = (grib_handle *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char **arg3 = (char **) 0 ;
+  size_t *arg4 = (size_t *) 0 ;
+  int result;
+  
+  arg1 = (grib_handle *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char **)jarg3; 
+  arg4 = (size_t *)jarg4; 
+  result = (int)grib_get_string_array(arg1,(char const *)arg2,arg3,arg4);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT int SWIGSTDCALL CSharp_GribGetBytes(void * jarg1, char * jarg2, void * jarg3, void * jarg4) {
   int jresult ;
   grib_handle *arg1 = (grib_handle *) 0 ;
@@ -1863,6 +1927,24 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GribSetLongArray(void * jarg1, char * jarg2, v
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_GribSetStringArray(void * jarg1, char * jarg2, void * jarg3, unsigned long jarg4) {
+  int jresult ;
+  grib_handle *arg1 = (grib_handle *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char **arg3 = (char **) 0 ;
+  size_t arg4 ;
+  int result;
+  
+  arg1 = (grib_handle *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char **)jarg3; 
+  arg4 = (size_t)jarg4; 
+  result = (int)grib_set_string_array(arg1,(char const *)arg2,(char const **)arg3,arg4);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_GribDumpContent(void * jarg1, void * jarg2, char * jarg3, unsigned long jarg4, void * jarg5) {
   grib_handle *arg1 = (grib_handle *) 0 ;
   FILE *arg2 = (FILE *) 0 ;
@@ -1894,18 +1976,6 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_GribContextGetDefault() {
   grib_context *result = 0 ;
   
   result = (grib_context *)grib_context_get_default();
-  jresult = (void *)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void * SWIGSTDCALL CSharp_GribContextNew(void * jarg1) {
-  void * jresult ;
-  grib_context *arg1 = (grib_context *) 0 ;
-  grib_context *result = 0 ;
-  
-  arg1 = (grib_context *)jarg1; 
-  result = (grib_context *)grib_context_new(arg1);
   jresult = (void *)result; 
   return jresult;
 }
@@ -1960,6 +2030,26 @@ SWIGEXPORT void SWIGSTDCALL CSharp_GribGribexModeOff(void * jarg1) {
   
   arg1 = (grib_context *)jarg1; 
   grib_gribex_mode_off(arg1);
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribContextSetDefinitionsPath(void * jarg1, char * jarg2) {
+  grib_context *arg1 = (grib_context *) 0 ;
+  char *arg2 = (char *) 0 ;
+  
+  arg1 = (grib_context *)jarg1; 
+  arg2 = (char *)jarg2; 
+  grib_context_set_definitions_path(arg1,(char const *)arg2);
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribContextSetSamplesPath(void * jarg1, char * jarg2) {
+  grib_context *arg1 = (grib_context *) 0 ;
+  char *arg2 = (char *) 0 ;
+  
+  arg1 = (grib_context *)jarg1; 
+  arg2 = (char *)jarg2; 
+  grib_context_set_samples_path(arg1,(char const *)arg2);
 }
 
 
@@ -2061,6 +2151,18 @@ SWIGEXPORT char * SWIGSTDCALL CSharp_GribSamplesPath(void * jarg1) {
 }
 
 
+SWIGEXPORT char * SWIGSTDCALL CSharp_GribDefinitionPath(void * jarg1) {
+  char * jresult ;
+  grib_context *arg1 = (grib_context *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (grib_context *)jarg1; 
+  result = (char *)grib_definition_path((grib_context const *)arg1);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
 SWIGEXPORT long SWIGSTDCALL CSharp_GribGetApiVersion() {
   long jresult ;
   long result;
@@ -2076,6 +2178,16 @@ SWIGEXPORT char * SWIGSTDCALL CSharp_GribGetGitSha1() {
   char *result = 0 ;
   
   result = (char *)grib_get_git_sha1();
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_GribGetPackageName() {
+  char * jresult ;
+  char *result = 0 ;
+  
+  result = (char *)grib_get_package_name();
   jresult = SWIG_csharp_string_callback((const char *)result); 
   return jresult;
 }
@@ -2105,6 +2217,32 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_GribKeysIteratorNew(void * jarg1, unsigned 
 }
 
 
+SWIGEXPORT void * SWIGSTDCALL CSharp_CodesBufrKeysIteratorNew(void * jarg1, unsigned long jarg2) {
+  void * jresult ;
+  grib_handle *arg1 = (grib_handle *) 0 ;
+  unsigned long arg2 ;
+  bufr_keys_iterator *result = 0 ;
+  
+  arg1 = (grib_handle *)jarg1; 
+  arg2 = (unsigned long)jarg2; 
+  result = (bufr_keys_iterator *)codes_bufr_keys_iterator_new(arg1,arg2);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_CodesBufrDataSectionKeysIteratorNew(void * jarg1) {
+  void * jresult ;
+  grib_handle *arg1 = (grib_handle *) 0 ;
+  bufr_keys_iterator *result = 0 ;
+  
+  arg1 = (grib_handle *)jarg1; 
+  result = (bufr_keys_iterator *)codes_bufr_data_section_keys_iterator_new(arg1);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT int SWIGSTDCALL CSharp_GribKeysIteratorNext(void * jarg1) {
   int jresult ;
   grib_keys_iterator *arg1 = (grib_keys_iterator *) 0 ;
@@ -2112,6 +2250,18 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GribKeysIteratorNext(void * jarg1) {
   
   arg1 = (grib_keys_iterator *)jarg1; 
   result = (int)grib_keys_iterator_next(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_CodesBufrKeysIteratorNext(void * jarg1) {
+  int jresult ;
+  bufr_keys_iterator *arg1 = (bufr_keys_iterator *) 0 ;
+  int result;
+  
+  arg1 = (bufr_keys_iterator *)jarg1; 
+  result = (int)codes_bufr_keys_iterator_next(arg1);
   jresult = result; 
   return jresult;
 }
@@ -2129,6 +2279,18 @@ SWIGEXPORT char * SWIGSTDCALL CSharp_GribKeysIteratorGetName(void * jarg1) {
 }
 
 
+SWIGEXPORT char * SWIGSTDCALL CSharp_CodesBufrKeysIteratorGetName(void * jarg1) {
+  char * jresult ;
+  bufr_keys_iterator *arg1 = (bufr_keys_iterator *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (bufr_keys_iterator *)jarg1; 
+  result = (char *)codes_bufr_keys_iterator_get_name(arg1);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
 SWIGEXPORT int SWIGSTDCALL CSharp_GribKeysIteratorDelete(void * jarg1) {
   int jresult ;
   grib_keys_iterator *arg1 = (grib_keys_iterator *) 0 ;
@@ -2141,6 +2303,18 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GribKeysIteratorDelete(void * jarg1) {
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_CodesBufrKeysIteratorDelete(void * jarg1) {
+  int jresult ;
+  bufr_keys_iterator *arg1 = (bufr_keys_iterator *) 0 ;
+  int result;
+  
+  arg1 = (bufr_keys_iterator *)jarg1; 
+  result = (int)codes_bufr_keys_iterator_delete(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT int SWIGSTDCALL CSharp_GribKeysIteratorRewind(void * jarg1) {
   int jresult ;
   grib_keys_iterator *arg1 = (grib_keys_iterator *) 0 ;
@@ -2148,6 +2322,18 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GribKeysIteratorRewind(void * jarg1) {
   
   arg1 = (grib_keys_iterator *)jarg1; 
   result = (int)grib_keys_iterator_rewind(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_CodesBufrKeysIteratorRewind(void * jarg1) {
+  int jresult ;
+  bufr_keys_iterator *arg1 = (bufr_keys_iterator *) 0 ;
+  int result;
+  
+  arg1 = (bufr_keys_iterator *)jarg1; 
+  result = (int)codes_bufr_keys_iterator_rewind(arg1);
   jresult = result; 
   return jresult;
 }
@@ -2231,6 +2417,24 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GribKeysIteratorGetBytes(void * jarg1, void * 
 }
 
 
+SWIGEXPORT int SWIGSTDCALL CSharp_CodesCopyKey(void * jarg1, void * jarg2, char * jarg3, int jarg4) {
+  int jresult ;
+  grib_handle *arg1 = (grib_handle *) 0 ;
+  grib_handle *arg2 = (grib_handle *) 0 ;
+  char *arg3 = (char *) 0 ;
+  int arg4 ;
+  int result;
+  
+  arg1 = (grib_handle *)jarg1; 
+  arg2 = (grib_handle *)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (int)jarg4; 
+  result = (int)codes_copy_key(arg1,arg2,(char const *)arg3,arg4);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_GribUpdateSectionsLengths(void * jarg1) {
   grib_handle *arg1 = (grib_handle *) 0 ;
   
@@ -2248,30 +2452,6 @@ SWIGEXPORT char * SWIGSTDCALL CSharp_GribGetErrorMessage(int jarg1) {
   result = (char *)grib_get_error_message(arg1);
   jresult = SWIG_csharp_string_callback((const char *)result); 
   return jresult;
-}
-
-
-SWIGEXPORT void SWIGSTDCALL CSharp_GribSetFailProc(void * jarg1) {
-  grib_fail_proc arg1 = (grib_fail_proc) 0 ;
-  
-  arg1 = (grib_fail_proc)jarg1; 
-  grib_set_fail_proc(arg1);
-}
-
-
-SWIGEXPORT void SWIGSTDCALL CSharp_GribSetExitProc(void * jarg1) {
-  grib_exit_proc arg1 = (grib_exit_proc) 0 ;
-  
-  arg1 = (grib_exit_proc)jarg1; 
-  grib_set_exit_proc(arg1);
-}
-
-
-SWIGEXPORT void SWIGSTDCALL CSharp_GribExit(int jarg1) {
-  int arg1 ;
-  
-  arg1 = (int)jarg1; 
-  grib_exit(arg1);
 }
 
 
@@ -2361,7 +2541,7 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_GribHandleNewFromPartialMessage(void * jarg
   arg1 = (grib_context *)jarg1; 
   arg2 = (void *)jarg2; 
   arg3 = (size_t)jarg3; 
-  result = (grib_handle *)grib_handle_new_from_partial_message(arg1,arg2,arg3);
+  result = (grib_handle *)grib_handle_new_from_partial_message(arg1,(void const *)arg2,arg3);
   jresult = (void *)result; 
   return jresult;
 }
@@ -2652,60 +2832,6 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_WmoReadBufrFromFileMalloc(void * jarg1, int
   arg4 = (off_t *)jarg4; 
   arg5 = (int *)jarg5; 
   result = (void *)wmo_read_bufr_from_file_malloc(arg1,arg2,arg3,arg4,arg5);
-  jresult = (void *)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void * SWIGSTDCALL CSharp_EccodeGtsNewFromFile(void * jarg1, void * jarg2, int jarg3, void * jarg4) {
-  void * jresult ;
-  grib_context *arg1 = (grib_context *) 0 ;
-  FILE *arg2 = (FILE *) 0 ;
-  int arg3 ;
-  int *arg4 = (int *) 0 ;
-  grib_handle *result = 0 ;
-  
-  arg1 = (grib_context *)jarg1; 
-  arg2 = (FILE *)jarg2; 
-  arg3 = (int)jarg3; 
-  arg4 = (int *)jarg4; 
-  result = (grib_handle *)eccode_gts_new_from_file(arg1,arg2,arg3,arg4);
-  jresult = (void *)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void * SWIGSTDCALL CSharp_EccodeBufrNewFromFile(void * jarg1, void * jarg2, int jarg3, void * jarg4) {
-  void * jresult ;
-  grib_context *arg1 = (grib_context *) 0 ;
-  FILE *arg2 = (FILE *) 0 ;
-  int arg3 ;
-  int *arg4 = (int *) 0 ;
-  grib_handle *result = 0 ;
-  
-  arg1 = (grib_context *)jarg1; 
-  arg2 = (FILE *)jarg2; 
-  arg3 = (int)jarg3; 
-  arg4 = (int *)jarg4; 
-  result = (grib_handle *)eccode_bufr_new_from_file(arg1,arg2,arg3,arg4);
-  jresult = (void *)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void * SWIGSTDCALL CSharp_EccodeGribNewFromFile(void * jarg1, void * jarg2, int jarg3, void * jarg4) {
-  void * jresult ;
-  grib_context *arg1 = (grib_context *) 0 ;
-  FILE *arg2 = (FILE *) 0 ;
-  int arg3 ;
-  int *arg4 = (int *) 0 ;
-  grib_handle *result = 0 ;
-  
-  arg1 = (grib_context *)jarg1; 
-  arg2 = (FILE *)jarg2; 
-  arg3 = (int)jarg3; 
-  arg4 = (int *)jarg4; 
-  result = (grib_handle *)eccode_grib_new_from_file(arg1,arg2,arg3,arg4);
   jresult = (void *)result; 
   return jresult;
 }
@@ -3621,6 +3747,581 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_GribUtilGridSpec(void * jarg1) {
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_gridType_set(void * jarg1, int jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  int arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->grid_type = arg2;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_GribUtilGridSpec2_gridType_get(void * jarg1) {
+  int jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  int result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (int) ((arg1)->grid_type);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_gridName_set(void * jarg1, char * jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  char *arg2 = (char *) 0 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (char *)jarg2; 
+  {
+    if (arg2) {
+      arg1->grid_name = (char const *) (new char[strlen((const char *)arg2)+1]);
+      strcpy((char *)arg1->grid_name, (const char *)arg2);
+    } else {
+      arg1->grid_name = 0;
+    }
+  }
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_GribUtilGridSpec2_gridName_get(void * jarg1) {
+  char * jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (char *) ((arg1)->grid_name);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_ni_set(void * jarg1, long jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (long)jarg2; 
+  if (arg1) (arg1)->Ni = arg2;
+}
+
+
+SWIGEXPORT long SWIGSTDCALL CSharp_GribUtilGridSpec2_ni_get(void * jarg1) {
+  long jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (long) ((arg1)->Ni);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_nj_set(void * jarg1, long jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (long)jarg2; 
+  if (arg1) (arg1)->Nj = arg2;
+}
+
+
+SWIGEXPORT long SWIGSTDCALL CSharp_GribUtilGridSpec2_nj_get(void * jarg1) {
+  long jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (long) ((arg1)->Nj);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_iDirectionIncrementInDegrees_set(void * jarg1, double jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (double)jarg2; 
+  if (arg1) (arg1)->iDirectionIncrementInDegrees = arg2;
+}
+
+
+SWIGEXPORT double SWIGSTDCALL CSharp_GribUtilGridSpec2_iDirectionIncrementInDegrees_get(void * jarg1) {
+  double jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (double) ((arg1)->iDirectionIncrementInDegrees);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_jDirectionIncrementInDegrees_set(void * jarg1, double jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (double)jarg2; 
+  if (arg1) (arg1)->jDirectionIncrementInDegrees = arg2;
+}
+
+
+SWIGEXPORT double SWIGSTDCALL CSharp_GribUtilGridSpec2_jDirectionIncrementInDegrees_get(void * jarg1) {
+  double jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (double) ((arg1)->jDirectionIncrementInDegrees);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_longitudeOfFirstGridPointInDegrees_set(void * jarg1, double jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (double)jarg2; 
+  if (arg1) (arg1)->longitudeOfFirstGridPointInDegrees = arg2;
+}
+
+
+SWIGEXPORT double SWIGSTDCALL CSharp_GribUtilGridSpec2_longitudeOfFirstGridPointInDegrees_get(void * jarg1) {
+  double jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (double) ((arg1)->longitudeOfFirstGridPointInDegrees);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_longitudeOfLastGridPointInDegrees_set(void * jarg1, double jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (double)jarg2; 
+  if (arg1) (arg1)->longitudeOfLastGridPointInDegrees = arg2;
+}
+
+
+SWIGEXPORT double SWIGSTDCALL CSharp_GribUtilGridSpec2_longitudeOfLastGridPointInDegrees_get(void * jarg1) {
+  double jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (double) ((arg1)->longitudeOfLastGridPointInDegrees);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_latitudeOfFirstGridPointInDegrees_set(void * jarg1, double jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (double)jarg2; 
+  if (arg1) (arg1)->latitudeOfFirstGridPointInDegrees = arg2;
+}
+
+
+SWIGEXPORT double SWIGSTDCALL CSharp_GribUtilGridSpec2_latitudeOfFirstGridPointInDegrees_get(void * jarg1) {
+  double jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (double) ((arg1)->latitudeOfFirstGridPointInDegrees);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_latitudeOfLastGridPointInDegrees_set(void * jarg1, double jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (double)jarg2; 
+  if (arg1) (arg1)->latitudeOfLastGridPointInDegrees = arg2;
+}
+
+
+SWIGEXPORT double SWIGSTDCALL CSharp_GribUtilGridSpec2_latitudeOfLastGridPointInDegrees_get(void * jarg1) {
+  double jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (double) ((arg1)->latitudeOfLastGridPointInDegrees);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_uvRelativeToGrid_set(void * jarg1, long jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (long)jarg2; 
+  if (arg1) (arg1)->uvRelativeToGrid = arg2;
+}
+
+
+SWIGEXPORT long SWIGSTDCALL CSharp_GribUtilGridSpec2_uvRelativeToGrid_get(void * jarg1) {
+  long jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (long) ((arg1)->uvRelativeToGrid);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_latitudeOfSouthernPoleInDegrees_set(void * jarg1, double jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (double)jarg2; 
+  if (arg1) (arg1)->latitudeOfSouthernPoleInDegrees = arg2;
+}
+
+
+SWIGEXPORT double SWIGSTDCALL CSharp_GribUtilGridSpec2_latitudeOfSouthernPoleInDegrees_get(void * jarg1) {
+  double jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (double) ((arg1)->latitudeOfSouthernPoleInDegrees);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_longitudeOfSouthernPoleInDegrees_set(void * jarg1, double jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (double)jarg2; 
+  if (arg1) (arg1)->longitudeOfSouthernPoleInDegrees = arg2;
+}
+
+
+SWIGEXPORT double SWIGSTDCALL CSharp_GribUtilGridSpec2_longitudeOfSouthernPoleInDegrees_get(void * jarg1) {
+  double jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (double) ((arg1)->longitudeOfSouthernPoleInDegrees);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_angleOfRotationInDegrees_set(void * jarg1, double jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (double)jarg2; 
+  if (arg1) (arg1)->angleOfRotationInDegrees = arg2;
+}
+
+
+SWIGEXPORT double SWIGSTDCALL CSharp_GribUtilGridSpec2_angleOfRotationInDegrees_get(void * jarg1) {
+  double jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (double) ((arg1)->angleOfRotationInDegrees);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_iScansNegatively_set(void * jarg1, long jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (long)jarg2; 
+  if (arg1) (arg1)->iScansNegatively = arg2;
+}
+
+
+SWIGEXPORT long SWIGSTDCALL CSharp_GribUtilGridSpec2_iScansNegatively_get(void * jarg1) {
+  long jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (long) ((arg1)->iScansNegatively);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_jScansPositively_set(void * jarg1, long jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (long)jarg2; 
+  if (arg1) (arg1)->jScansPositively = arg2;
+}
+
+
+SWIGEXPORT long SWIGSTDCALL CSharp_GribUtilGridSpec2_jScansPositively_get(void * jarg1) {
+  long jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (long) ((arg1)->jScansPositively);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_n_set(void * jarg1, long jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (long)jarg2; 
+  if (arg1) (arg1)->N = arg2;
+}
+
+
+SWIGEXPORT long SWIGSTDCALL CSharp_GribUtilGridSpec2_n_get(void * jarg1) {
+  long jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (long) ((arg1)->N);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_bitmapPresent_set(void * jarg1, long jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (long)jarg2; 
+  if (arg1) (arg1)->bitmapPresent = arg2;
+}
+
+
+SWIGEXPORT long SWIGSTDCALL CSharp_GribUtilGridSpec2_bitmapPresent_get(void * jarg1) {
+  long jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (long) ((arg1)->bitmapPresent);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_missingValue_set(void * jarg1, double jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (double)jarg2; 
+  if (arg1) (arg1)->missingValue = arg2;
+}
+
+
+SWIGEXPORT double SWIGSTDCALL CSharp_GribUtilGridSpec2_missingValue_get(void * jarg1) {
+  double jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (double) ((arg1)->missingValue);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_pl_set(void * jarg1, void * jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long *arg2 = (long *) 0 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (long *)jarg2; 
+  if (arg1) (arg1)->pl = (long const *)arg2;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_GribUtilGridSpec2_pl_get(void * jarg1) {
+  void * jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long *result = 0 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (long *) ((arg1)->pl);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_plSize_set(void * jarg1, long jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (long)jarg2; 
+  if (arg1) (arg1)->pl_size = arg2;
+}
+
+
+SWIGEXPORT long SWIGSTDCALL CSharp_GribUtilGridSpec2_plSize_get(void * jarg1) {
+  long jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (long) ((arg1)->pl_size);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_truncation_set(void * jarg1, long jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (long)jarg2; 
+  if (arg1) (arg1)->truncation = arg2;
+}
+
+
+SWIGEXPORT long SWIGSTDCALL CSharp_GribUtilGridSpec2_truncation_get(void * jarg1) {
+  long jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (long) ((arg1)->truncation);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_orientationOfTheGridInDegrees_set(void * jarg1, double jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (double)jarg2; 
+  if (arg1) (arg1)->orientationOfTheGridInDegrees = arg2;
+}
+
+
+SWIGEXPORT double SWIGSTDCALL CSharp_GribUtilGridSpec2_orientationOfTheGridInDegrees_get(void * jarg1) {
+  double jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  double result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (double) ((arg1)->orientationOfTheGridInDegrees);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_dyInMetres_set(void * jarg1, long jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (long)jarg2; 
+  if (arg1) (arg1)->DyInMetres = arg2;
+}
+
+
+SWIGEXPORT long SWIGSTDCALL CSharp_GribUtilGridSpec2_dyInMetres_get(void * jarg1) {
+  long jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (long) ((arg1)->DyInMetres);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GribUtilGridSpec2_dxInMetres_set(void * jarg1, long jarg2) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long arg2 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  arg2 = (long)jarg2; 
+  if (arg1) (arg1)->DxInMetres = arg2;
+}
+
+
+SWIGEXPORT long SWIGSTDCALL CSharp_GribUtilGridSpec2_dxInMetres_get(void * jarg1) {
+  long jresult ;
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  long result;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  result = (long) ((arg1)->DxInMetres);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_GribUtilGridSpec2() {
+  void * jresult ;
+  grib_util_grid_spec2 *result = 0 ;
+  
+  result = (grib_util_grid_spec2 *)new grib_util_grid_spec2();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_GribUtilGridSpec2(void * jarg1) {
+  grib_util_grid_spec2 *arg1 = (grib_util_grid_spec2 *) 0 ;
+  
+  arg1 = (grib_util_grid_spec2 *)jarg1; 
+  delete arg1;
+}
+
+
 SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_UTIL_PACKING_TYPE_SAME_AS_INPUT_get() {
   int jresult ;
   int result;
@@ -4093,6 +4794,38 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_GribUtilSetSpec(void * jarg1, void * jarg2,
 }
 
 
+SWIGEXPORT void * SWIGSTDCALL CSharp_GribUtilSetSpec2(void * jarg1, void * jarg2, void * jarg3, int jarg4, void * jarg5, unsigned long jarg6, void * jarg7) {
+  void * jresult ;
+  grib_handle *arg1 = (grib_handle *) 0 ;
+  grib_util_grid_spec2 *arg2 = (grib_util_grid_spec2 *) 0 ;
+  grib_util_packing_spec *arg3 = (grib_util_packing_spec *) 0 ;
+  int arg4 ;
+  double *arg5 = (double *) 0 ;
+  size_t arg6 ;
+  int *arg7 = (int *) 0 ;
+  grib_handle *result = 0 ;
+  
+  arg1 = (grib_handle *)jarg1; 
+  arg2 = (grib_util_grid_spec2 *)jarg2; 
+  arg3 = (grib_util_packing_spec *)jarg3; 
+  arg4 = (int)jarg4; 
+  arg5 = (double *)jarg5; 
+  arg6 = (size_t)jarg6; 
+  arg7 = (int *)jarg7; 
+  result = (grib_handle *)grib_util_set_spec2(arg1,(grib_util_grid_spec2 const *)arg2,(grib_util_packing_spec const *)arg3,arg4,(double const *)arg5,arg6,arg7);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_CodesSetCodesAssertionFailedProc(void * jarg1) {
+  codes_assertion_failed_proc arg1 = (codes_assertion_failed_proc) 0 ;
+  
+  arg1 = (codes_assertion_failed_proc)jarg1; 
+  codes_set_codes_assertion_failed_proc(arg1);
+}
+
+
 SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_SUCCESS_get() {
   int jresult ;
   int result;
@@ -4463,7 +5196,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_CONCEPT_NO_MATCH_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_NO_DEFINITIONS_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_HASH_ARRAY_NO_MATCH_get() {
   int jresult ;
   int result;
   
@@ -4473,7 +5206,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_NO_DEFINITIONS_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_WRONG_TYPE_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_NO_DEFINITIONS_get() {
   int jresult ;
   int result;
   
@@ -4483,7 +5216,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_WRONG_TYPE_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_END_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_WRONG_TYPE_get() {
   int jresult ;
   int result;
   
@@ -4493,7 +5226,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_END_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_NO_VALUES_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_END_get() {
   int jresult ;
   int result;
   
@@ -4503,7 +5236,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_NO_VALUES_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_WRONG_GRID_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_NO_VALUES_get() {
   int jresult ;
   int result;
   
@@ -4513,7 +5246,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_WRONG_GRID_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_END_OF_INDEX_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_WRONG_GRID_get() {
   int jresult ;
   int result;
   
@@ -4523,7 +5256,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_END_OF_INDEX_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_NULL_INDEX_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_END_OF_INDEX_get() {
   int jresult ;
   int result;
   
@@ -4533,7 +5266,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_NULL_INDEX_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_PREMATURE_END_OF_FILE_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_NULL_INDEX_get() {
   int jresult ;
   int result;
   
@@ -4543,7 +5276,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_PREMATURE_END_OF_FILE_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_INTERNAL_ARRAY_TOO_SMALL_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_PREMATURE_END_OF_FILE_get() {
   int jresult ;
   int result;
   
@@ -4553,7 +5286,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_INTERNAL_ARRAY_TOO_SMALL_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_MESSAGE_TOO_LARGE_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_INTERNAL_ARRAY_TOO_SMALL_get() {
   int jresult ;
   int result;
   
@@ -4563,7 +5296,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_MESSAGE_TOO_LARGE_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_CONSTANT_FIELD_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_MESSAGE_TOO_LARGE_get() {
   int jresult ;
   int result;
   
@@ -4573,7 +5306,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_CONSTANT_FIELD_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_SWITCH_NO_MATCH_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_CONSTANT_FIELD_get() {
   int jresult ;
   int result;
   
@@ -4583,7 +5316,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_SWITCH_NO_MATCH_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_UNDERFLOW_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_SWITCH_NO_MATCH_get() {
   int jresult ;
   int result;
   
@@ -4593,7 +5326,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_UNDERFLOW_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_MESSAGE_MALFORMED_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_UNDERFLOW_get() {
   int jresult ;
   int result;
   
@@ -4603,7 +5336,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_MESSAGE_MALFORMED_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_CORRUPTED_INDEX_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_MESSAGE_MALFORMED_get() {
   int jresult ;
   int result;
   
@@ -4613,7 +5346,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_CORRUPTED_INDEX_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_INVALID_BPV_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_CORRUPTED_INDEX_get() {
   int jresult ;
   int result;
   
@@ -4623,7 +5356,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_INVALID_BPV_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_DIFFERENT_EDITION_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_INVALID_BPV_get() {
   int jresult ;
   int result;
   
@@ -4633,7 +5366,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_DIFFERENT_EDITION_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_VALUE_DIFFERENT_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_DIFFERENT_EDITION_get() {
   int jresult ;
   int result;
   
@@ -4643,11 +5376,121 @@ SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_VALUE_DIFFERENT_get() {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_INVALID_KEY_VALUE_get() {
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_VALUE_DIFFERENT_get() {
   int jresult ;
   int result;
   
   result = (int)(-55);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_INVALID_KEY_VALUE_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(-56);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_STRING_TOO_SMALL_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(-57);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_WRONG_CONVERSION_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(-58);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_MISSING_BUFR_ENTRY_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(-59);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_NULL_POINTER_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(-60);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_ATTRIBUTE_CLASH_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(-61);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_TOO_MANY_ATTRIBUTES_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(-62);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_ATTRIBUTE_NOT_FOUND_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(-63);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_UNSUPPORTED_EDITION_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(-64);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_OUT_OF_RANGE_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(-65);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_GRIB_WRONG_BITMAP_SIZE_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(-66);
   jresult = result; 
   return jresult;
 }
