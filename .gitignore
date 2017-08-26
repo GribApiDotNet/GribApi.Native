@@ -194,6 +194,7 @@ FakesAssemblies/
 # Visual Studio 6 workspace options file
 *.opt
 
+build/SWIG
 lib/*
 GribApi.XP/
 nuget.package/Grib.Api

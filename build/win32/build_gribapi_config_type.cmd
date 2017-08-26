@@ -3,7 +3,7 @@
 REM Sample usages:
 REM
 REM  Building and running tests
-REM  - build_gribapi.cmd [rebuild] [tools version] [Debug|Release] [package version]
+REM  - build_gribapi.cmd [rebuild] [tools version] [Debug|Release]
 REM 
 
 SET REBUILD=/t:Build 

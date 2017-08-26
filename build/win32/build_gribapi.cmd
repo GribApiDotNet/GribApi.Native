@@ -26,7 +26,7 @@ if ERRORLEVEL 1 (
 
 if NOT "%PKG_VERSION%"=="" (
 	@ECHO ON
-	call %~dp0build_nuget.cmd %PKG_VERSION% %CONFIG%
+	call %~dp0build_nuget.cmd %PKG_VERSION%
 	if ERRORLEVEL 1 (
 		ECHO PACKAGE FAILED
 		EXIT /B 1
